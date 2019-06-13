@@ -96,7 +96,7 @@ $ ssh-keygen
 $ vi ~/Desktop/Documentation/Ansible/QuickStart/centos-7-server/Vagrantfile
 ```
 
-# CentOS Host
+#  CentOS Host
 ```bash
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
