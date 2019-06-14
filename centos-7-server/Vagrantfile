@@ -45,11 +45,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.compatibility_mode = "2.0"
         ansible.playbook = "playbook.yml"
 
-        #ansible.groups = {
-        #  "osgroup" => ["node[1:5]"],
-        #  "cephgroup" => ["node[3:5]"],
-        #  "cephdeploy" => ["node1"]
-        #}
+        ansible.groups = {
+          "osgroup" => ["node[1:5]"],
+          "cephgroup" => ["node[3:5]"],
+          "cephdeploy" => ["node3"]
+        }
       end
       
 
@@ -90,13 +90,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.compatibility_mode = "2.0"
         ansible.playbook = "playbook.yml"
 
-        #ansible.groups = {
-        #  "osgroup" => ["node[1:5]"],
-        #  "cephgroup" => ["node[3:5]"],
-        #  "cephdeploy" => ["node1"]
-        #}
+        ansible.groups = {
+          "osgroup" => ["node[1:5]"],
+          "cephgroup" => ["node[3:5]"],
+          "cephdeploy" => ["node3"]
+        }
       end
-      
+
     end # end config
   end # end cluster
     
