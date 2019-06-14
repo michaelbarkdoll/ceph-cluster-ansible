@@ -6,66 +6,98 @@ VAGRANTFILE_API_VERSION = "2"
 #javapackage = ENV['java_package'] || "openjdk-8-jre"
 #javahome = ENV['java_home'] || "/usr/lib/jvm/java-8-openjdk-amd64/jre"
 
+cluster = {
+  "node1" => { :ip => "10.100.194.21", :cpus => 4, :mem => 4096 },
+  "node2" => { :ip => "10.100.194.22", :cpus => 4, :mem => 4096 }
+}
+
+cephcluster = {
+  "node3" => { :ip => "10.100.194.23", :cpus => 4, :mem => 4096 },
+  "node4" => { :ip => "10.100.194.24", :cpus => 4, :mem => 4096 },
+  "node5" => { :ip => "10.100.194.25", :cpus => 4, :mem => 4096 }
+}
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  # Centos 7
-  config.vm.box = "centos/7"
 
-  # Configure vm name (later used for ansible group)
-  config.vm.define "centos7ceph1" do | centos7ceph1 |
-    centos7ceph1.vm.box = "centos/7"
-    centos7ceph1.vm.hostname = "centos7ceph1"
-    centos7ceph1.vm.network "public_network", ip: "10.100.194.21", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
-    centos7ceph1.vm.network "private_network", ip: "192.168.50.1"
-    #config.vm.network "public_network", ip: "192.168.0.17"
-  end
-  config.vm.define "centos7ceph2" do | centos7ceph2 |
-    centos7ceph2.vm.box = "centos/7"
-    centos7ceph2.vm.hostname = "centos7ceph2"
-    centos7ceph2.vm.network "public_network", ip: "10.100.194.22", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
-    centos7ceph2.vm.network "private_network", ip: "192.168.50.2"
-  end
-  config.vm.define "centos7ceph3" do | centos7ceph3 |
-    centos7ceph3.vm.box = "centos/7"
-    centos7ceph3.vm.hostname = "centos7ceph3"
-    centos7ceph3.vm.network "public_network", ip: "10.100.194.23", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
-    centos7ceph3.vm.network "private_network", ip: "192.168.50.3"
-  end
+  cluster.each_with_index do |(hostname, info), index|
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = 4096
-    vb.cpus = 4
-  end
+    config.vm.define hostname do |cfg|
 
-  #config.vm.network "public_network", :bridge => "enxa0cec8039e98", ip: "10.100.194.21", :netmask => "255.255.248.0", auto_config: false
-  # CentOS 7 manual ip address (interface enxa0cec8039e98)
-  #config.vm.network "public_network", ip: "10.100.194.21", bridge: "enxa0cec8039e98", bootproto: "static", gateway: "10.100.199.254"
+      cfg.vm.provider :virtualbox do |vb, override|
+        config.vm.box = "centos/7"
+        override.vm.network :public_network, ip: "#{info[:ip]}", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+        override.vm.hostname = hostname
+        vb.name = hostname
+        
+        vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
 
-  #config.vm.provision "shell",
-    #inline: "sudo apt-get update && sudo apt install -y python"
-    #inline: "sudo yum update && sudo yum install -y python"
-    #inline: "sudo yum update"
-  
-  config.vm.provision "shell" do |s|
-    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
-    s.inline = <<-SHELL
-      echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
-      # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
-    SHELL
-  end
+      end # end provider
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.compatibility_mode = "2.0"
-    ansible.playbook = "playbook.yml"
+      config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+        SHELL
+      end
 
-    ansible.groups = {
-      "cephgroup" => ["centos7ceph[1:3]"],
-      "cephdeploy" => ["centos7ceph1"]
-    }
+      cfg.vm.provision "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        ansible.playbook = "playbook.yml"
 
-#    ansible.extra_vars = {
-#      java_package: javapackage,
-#      java_home: javahome
-#    }
-  end
+        #ansible.groups = {
+        #  "osgroup" => ["node[1:5]"],
+        #  "cephgroup" => ["node[3:5]"],
+        #  "cephdeploy" => ["node1"]
+        #}
+      end
+      
 
+    end # end config
+  end # end cluster
+
+  cephcluster.each_with_index do |(hostname, info), index|
+
+    config.vm.define hostname do |cfg|
+
+      cfg.vm.provider :virtualbox do |vb, override|
+        config.vm.box = "centos/7"
+        override.vm.network :public_network, ip: "#{info[:ip]}", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+        override.vm.hostname = hostname
+        vb.name = hostname
+        
+        vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
+        vb.customize ["storagectl", :id, "--add", "sata", "--name", "SATA" , "--portcount", 2, "--hostiocache", "on"]
+
+        if File.exists?("#{hostname}a.vdi")
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
+        else
+          vb.customize ['createhd', '--filename', "#{hostname}a.vdi", '--size', 8192 ]
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
+        end
+
+      end # end provider
+
+      config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+        SHELL
+      end
+
+      cfg.vm.provision "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        ansible.playbook = "playbook.yml"
+
+        #ansible.groups = {
+        #  "osgroup" => ["node[1:5]"],
+        #  "cephgroup" => ["node[3:5]"],
+        #  "cephdeploy" => ["node1"]
+        #}
+      end
+      
+    end # end config
+  end # end cluster
+    
 end

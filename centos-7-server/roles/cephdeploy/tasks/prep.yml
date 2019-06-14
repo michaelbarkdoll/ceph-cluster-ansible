@@ -1,5 +1,10 @@
 ---
 
+- name: Creates directory /root/ceph-ansible-keys
+  file:
+    path: /root/ceph-ansible-keys
+    state: directory
+
 - name: Install git
   package: name=git state=present
 
@@ -17,4 +22,20 @@
 
 - name: Install ansible
   package: name=ansible state=present
+
+- name: Copy ansible inventory
+  template:
+    src: etc/ansible/hosts
+    dest: /etc/ansible/hosts
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- name: Copy ceph-ansible/site.yml.sample file on the remote machine for editing
+  copy:
+    src: /root/ceph-ansible/site.yml.sample
+    dest: /root/ceph-ansible/site.yml
+    remote_src: yes
+    #validate: /usr/sbin/visudo -cf %s
 
