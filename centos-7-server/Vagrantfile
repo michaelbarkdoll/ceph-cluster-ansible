@@ -76,6 +76,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
         end
 
+        if File.exists?("#{hostname}b.vdi")
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
+        else
+          vb.customize ['createhd', '--filename', "#{hostname}b.vdi", '--size', 8192 ]
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
+        end
+
       end # end provider
 
       config.vm.provision "shell" do |s|
