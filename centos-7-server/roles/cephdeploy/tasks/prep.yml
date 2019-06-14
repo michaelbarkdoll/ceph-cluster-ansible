@@ -1,0 +1,20 @@
+---
+
+- name: Install git
+  package: name=git state=present
+
+- name: Clone ceph-ansible git repo
+  git:
+    repo: 'https://github.com/ceph/ceph-ansible.git'
+    dest: /root/ceph-ansible
+    version: stable-4.0
+
+- name: Install epel-release
+  package: name=epel-release state=present
+
+- name: Install python-pip
+  package: name=python-pip state=present
+
+- name: Install ansible
+  package: name=ansible state=present
+

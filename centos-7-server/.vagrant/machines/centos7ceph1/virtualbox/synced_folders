@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/cisadmin/Desktop/Documentation/Ansible/ceph-ansible/centos-7-server","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
