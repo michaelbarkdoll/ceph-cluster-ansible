@@ -41,17 +41,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         SHELL
       end
 
-      cfg.vm.provision "ansible" do |ansible|
-        ansible.compatibility_mode = "2.0"
-        ansible.playbook = "playbook.yml"
+#      cfg.vm.provision "ansible" do |ansible|
+#        ansible.compatibility_mode = "2.0"
+#        ansible.playbook = "bootstrap-nodes.yml"
+#
+#        ansible.groups = {
+#          "osgroup" => ["node[1:5]"],
+#          "cephgroup" => ["node[3:5]"],
+#          "cephdeploy" => ["node3"]
+#        }
+#      end
 
-        ansible.groups = {
-          "osgroup" => ["node[1:5]"],
-          "cephgroup" => ["node[3:5]"],
-          "cephdeploy" => ["node3"]
-        }
-      end
-      
+      # ansible-playbook -i staging ceph-deploy-playbook.yml
+      # vagrant provision --provision-with ansible-ceph-deploy
 
     end # end config
   end # end cluster
@@ -95,7 +97,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       cfg.vm.provision "ansible" do |ansible|
         ansible.compatibility_mode = "2.0"
-        ansible.playbook = "playbook.yml"
+        #ansible.verbose = true
+        #ansible.playbook = "playbook.yml"
+        ansible.playbook = "bootstrap-nodes.yml"
+
+        ansible.groups = {
+          "osgroup" => ["node[1:5]"],
+          "cephgroup" => ["node[3:5]"],
+          "cephdeploy" => ["node3"]
+        }
+      end
+
+###      # Must be run with:
+###      # vagrant up && vagrant provision --provision-with ansible-ceph-deploy
+      cfg.vm.provision "ansible-ceph-deploy", run: "never", type: "ansible" do |ansible|
+      #cfg.vm.provision "ansible-ceph-deploy", type: "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        #ansible.verbose = true
+        #ansible.playbook = "playbook.yml"
+        ansible.playbook = "ceph-deploy-playbook.yml"
 
         ansible.groups = {
           "osgroup" => ["node[1:5]"],
@@ -106,5 +126,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     end # end config
   end # end cluster
-    
 end

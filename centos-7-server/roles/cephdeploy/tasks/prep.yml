@@ -23,6 +23,12 @@
 - name: Install ansible
   package: name=ansible state=present
 
+- name: Disable host key checking
+  lineinfile:
+    dest: /etc/ansible/ansible.cfg
+    regexp: '^#\s*host_key_checking.*$'
+    line: 'host_key_checking = False'
+
 - pip:
     requirements: /root/ceph-ansible/requirements.txt
 

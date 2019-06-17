@@ -8,13 +8,9 @@
         name: common
         tasks_from: main
 
-- hosts: cephdeploy
-  become: true
-  tasks:
-    - name: Deploy Ceph
-      include_role:
-        name: cephdeploy
-        tasks_from: main
+# vagrant up
+# vagrant provision --provision-with ansible-ceph-deploy
+
 
 #    - name: testtask
 #      package: name=nano state=present
