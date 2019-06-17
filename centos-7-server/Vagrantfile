@@ -124,6 +124,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         }
       end
 
+      # ansible-playbook -i staging ceph-deploy-playbook.yml
+      # vagrant provision --provision-with ansible-ceph-deploy
+
     end # end config
   end # end cluster
 end
