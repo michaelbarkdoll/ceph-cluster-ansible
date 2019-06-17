@@ -23,6 +23,15 @@
 - name: Install ansible
   package: name=ansible state=present
 
+- pip:
+    requirements: /root/ceph-ansible/requirements.txt
+
+#- name: Install python-netaddr
+#  package: name=python-netaddr state=present
+
+# pip:
+#   name: notario
+
 - name: Copy ansible inventory
   template:
     src: etc/ansible/hosts
