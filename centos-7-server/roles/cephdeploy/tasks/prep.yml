@@ -32,6 +32,15 @@
     mode: 0644
     backup: no
 
+- name: Copy ansible inventory /root/ceph-ansible/inventory
+  template:
+    src: etc/ansible/hosts
+    dest: /root/ceph-ansible/inventory
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
 - name: Copy ceph-ansible/site.yml.sample file on the remote machine for editing
   copy:
     src: /root/ceph-ansible/site.yml.sample
@@ -57,3 +66,5 @@
     mode: 0644
     backup: no
 
+# ansible all -m ping -i inventory
+# ansible-playbook site.yml -i inventory
