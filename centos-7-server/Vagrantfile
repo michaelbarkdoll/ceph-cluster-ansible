@@ -108,8 +108,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         }
       end
 
-###      # Must be run with:
-###      # vagrant up && vagrant provision --provision-with ansible-ceph-deploy
+      # Must be run with:
+      # vagrant up && vagrant provision --provision-with ansible-ceph-deploy
       cfg.vm.provision "ansible-ceph-deploy", run: "never", type: "ansible" do |ansible|
       #cfg.vm.provision "ansible-ceph-deploy", type: "ansible" do |ansible|
         ansible.compatibility_mode = "2.0"
