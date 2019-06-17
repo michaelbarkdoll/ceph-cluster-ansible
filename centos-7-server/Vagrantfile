@@ -25,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       cfg.vm.provider :virtualbox do |vb, override|
         config.vm.box = "centos/7"
-        override.vm.network :public_network, ip: "#{info[:ip]}", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+        override.vm.network :public_network, ip: "#{info[:ip]}", netmask: "255.255.248.0", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
         override.vm.hostname = hostname
         vb.name = hostname
         
@@ -64,7 +64,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       cfg.vm.provider :virtualbox do |vb, override|
         config.vm.box = "centos/7"
-        override.vm.network :public_network, ip: "#{info[:ip]}", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+        override.vm.network :public_network, ip: "#{info[:ip]}", netmask: "255.255.248.0", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
         override.vm.hostname = hostname
         vb.name = hostname
         
