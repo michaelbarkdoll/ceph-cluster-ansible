@@ -48,10 +48,10 @@
     mode: 0644
     backup: no
 
-- name: Copy /root/ceph-ansible/group_vars/all.yml
+- name: Copy /root/ceph-ansible/group_vars/osds.yml
   template:
-    src: ceph-ansible/group_vars/osd.yml
-    dest: /root/ceph-ansible/group_vars/osd.yml
+    src: ceph-ansible/group_vars/osds.yml
+    dest: /root/ceph-ansible/group_vars/osds.yml
     owner: root
     group: root
     mode: 0644
