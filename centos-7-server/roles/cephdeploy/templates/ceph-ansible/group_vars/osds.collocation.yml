@@ -1,0 +1,6 @@
+devices:
+  - /dev/sdb
+  - /dev/sdc
+  #- /dev/sdd
+  
+journal_collocation: true
