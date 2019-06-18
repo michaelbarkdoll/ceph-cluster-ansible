@@ -69,7 +69,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.name = hostname
         
         vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
-        vb.customize ["storagectl", :id, "--add", "sata", "--name", "SATA" , "--portcount", 2, "--hostiocache", "on"]
+        vb.customize ["storagectl", :id, "--add", "sata", "--name", "SATA" , "--portcount", 3, "--hostiocache", "on"]
 
         if File.exists?("#{hostname}a.vdi")
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
@@ -83,6 +83,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         else
           vb.customize ['createhd', '--filename', "#{hostname}b.vdi", '--size', 8192 ]
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
+        end
+
+        if File.exists?("#{hostname}c.vdi")
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}c.vdi"]
+        else
+          vb.customize ['createhd', '--filename', "#{hostname}c.vdi", '--size', 8192 ]
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}c.vdi"]
         end
 
       end # end provider
@@ -113,7 +120,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cfg.vm.provision "ansible-ceph-deploy", run: "never", type: "ansible" do |ansible|
       #cfg.vm.provision "ansible-ceph-deploy", type: "ansible" do |ansible|
         ansible.compatibility_mode = "2.0"
-        #ansible.verbose = true
+        ansible.verbose = true
         #ansible.playbook = "playbook.yml"
         ansible.playbook = "ceph-deploy-playbook.yml"
 

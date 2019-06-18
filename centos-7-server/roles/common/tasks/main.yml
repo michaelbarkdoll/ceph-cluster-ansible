@@ -21,3 +21,5 @@
     name: ntpd
     state: started
     enabled: yes
+
+- include: prepdisks.yml
