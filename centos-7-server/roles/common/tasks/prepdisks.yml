@@ -7,7 +7,6 @@
 - name: Install lvm2
   package: name=lvm2 state=present
 
- Create OSDs volume group
 - name: Create a OSDs data volume group on top of /dev/sda1 with physical extent size = 32MB
   lvg:
     vg: vg1-{{ ansible_hostname }}-data
