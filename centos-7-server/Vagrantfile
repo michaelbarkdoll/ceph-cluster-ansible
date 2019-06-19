@@ -74,21 +74,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         if File.exists?("#{hostname}a.vdi")
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
         else
-          vb.customize ['createhd', '--filename', "#{hostname}a.vdi", '--size', 8192 ]
+          vb.customize ['createhd', '--filename', "#{hostname}a.vdi", '--size', 10240 ]
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
         end
 
         if File.exists?("#{hostname}b.vdi")
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
         else
-          vb.customize ['createhd', '--filename', "#{hostname}b.vdi", '--size', 8192 ]
+          vb.customize ['createhd', '--filename', "#{hostname}b.vdi", '--size', 10240 ]
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
         end
 
         if File.exists?("#{hostname}c.vdi")
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}c.vdi"]
         else
-          vb.customize ['createhd', '--filename', "#{hostname}c.vdi", '--size', 8192 ]
+          vb.customize ['createhd', '--filename', "#{hostname}c.vdi", '--size', 10240 ]
           vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}c.vdi"]
         end
 

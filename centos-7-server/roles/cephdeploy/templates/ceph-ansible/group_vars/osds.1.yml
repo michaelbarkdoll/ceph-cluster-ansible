@@ -126,12 +126,25 @@ osd_objectstore: bluestore
 ####    wal_vg: vg1-wal 
 
 lvm_volumes:
-  - data: lv1-data 
-    data_vg: vg1-data 
-    db: lv1-db 
-    db_vg: vg1-db 
-    wal: lv1-wal 
-    wal_vg: vg1-wal 
+  - data: lv1-node3-data 
+    data_vg: vg1-node3-data 
+    db: lv1-node3-db 
+    db_vg: vg1-node3-db 
+    wal: lv1-node3-wal 
+    wal_vg: vg1-node3-wal 
+  - data: lv1-node4-data 
+    data_vg: vg1-node4-data 
+    db: lv1-node4-db
+    db_vg: vg1-node4-db
+    wal: lv1-node4-wal 
+    wal_vg: vg1-node4-wal 
+  - data: lv1-node5-data 
+    data_vg: vg1-node5-data 
+    db: lv1-node5-db 
+    db_vg: vg1-node5-db 
+    wal: lv1-node5-wal 
+    wal_vg: vg1-node5-wal 
+
 
 #lvm_volumes: []
 #crush_device_class: ""
