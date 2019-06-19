@@ -125,10 +125,6 @@ osd_objectstore: bluestore
 ####    wal: lv1-wal 
 ####    wal_vg: vg1-wal 
 
-
-# The lvm_volumes variable is defined globalling the below case for all nodes.
-# Alternatively, you can override the variable per node in the inventory file
-# to accomodiate for alternative names or disc requirements per node.
 lvm_volumes:
   - data: lv1-data 
     data_vg: vg1-data 
