@@ -120,7 +120,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cfg.vm.provision "ansible-ceph-deploy", run: "never", type: "ansible" do |ansible|
       #cfg.vm.provision "ansible-ceph-deploy", type: "ansible" do |ansible|
         ansible.compatibility_mode = "2.0"
-        ansible.verbose = true
+        #ansible.verbose = true
         #ansible.playbook = "playbook.yml"
         ansible.playbook = "ceph-deploy-playbook.yml"
 
